@@ -30,6 +30,9 @@ class CreateGamesTable extends Migration
 
             $table->unsignedBigInteger('player_4')->nullable();
             $table->foreign('player_4')->references('id')->on('players');
+
+            $table->unsignedSmallInteger('current_player')->default(1);
+
             $table->timestamps();
         });
     }

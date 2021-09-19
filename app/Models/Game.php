@@ -28,7 +28,7 @@ class Game extends Model
 
     public static function create(array $attributes):Game
     {
-        $startCash = 1200 ;
+        $startBalance = 1200 ;
 
         $game = new Game();
 
@@ -38,7 +38,7 @@ class Game extends Model
         $game->player_3 = null ;
         $game->player_4 = null ;
 
-        $game->current_player = 0 ;
+        $game->current_player = 1 ;
 
         if(isset($attributes['board_id'])){
             $game->board_id = $attributes['board_id'];
@@ -47,7 +47,7 @@ class Game extends Model
         if(isset($attributes['player_1'])){
             $player_1 = Player::create([
                 'user_id' =>$attributes['player_1'],
-                'cash' => $startCash,
+                'balance' => $startBalance,
             ]);
             $game->player_1 = $player_1->id;
         }
@@ -55,7 +55,7 @@ class Game extends Model
         if(isset($attributes['player_2'])){
             $player_2 = Player::create([
                 'user_id' =>$attributes['player_2'],
-                'cash' => $startCash,
+                'balance' => $startBalance,
             ]);
             $game->player_2 = $player_2->id;
         }
@@ -63,7 +63,7 @@ class Game extends Model
         if(isset($attributes['player_3'])){
             $player_3 = Player::create([
                 'user_id' =>$attributes['player_3'],
-                'cash' => $startCash,
+                'balance' => $startBalance,
             ]);
             $game->player_3 = $player_3->id;
         }
@@ -71,7 +71,7 @@ class Game extends Model
         if(isset($attributes['player_4'])){
             $player_4= Player::create([
                 'user_id' =>$attributes['player_4'],
-                'cash' => $startCash,
+                'balance' => $startBalance,
             ]);
             $game->player_4 = $player_4->id;
         }

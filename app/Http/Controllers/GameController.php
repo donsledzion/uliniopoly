@@ -70,11 +70,11 @@ class GameController extends Controller
     {
         try {
             if ($request->ajax()) {
-                error_log('========================================================');
+                /*error_log('========================================================');
                 error_log("Ajax request!");
-                error_log("Game: " . json_encode($request->game));
+                error_log("Game: " . json_encode($request->game));*/
                 $game = $request->game;
-                error_log('========================================================');
+                /*error_log('========================================================');
                 error_log("game->id:".$game['id']);
                 error_log("game->boardId:".$game['boardId']);
                 error_log("game->playersCount:".$game['playersCount']);
@@ -83,24 +83,28 @@ class GameController extends Controller
                 error_log("game->player1->order:".$game['player1']['order']);
                 error_log("game->player1->balance:".$game['player1']['balance']);
                 error_log("game->player1->id:".$game['player1']['order']);
-                error_log('========================================================');
+                error_log('========================================================');*/
                 $currentGame = Game::find($game['id']);
                 $currentGame->current_player = $game['currentPlayer'];
                 $currentGame->save();
                 $player1 = Player::find($currentGame->player_1);
                     $player1->field_no = $game['player1']['currentField'];
+                    $player1->balance = $game['player1']['balance'];
                     $player1->save();
                 $player2 = Player::find($currentGame->player_2);
                     $player2->field_no = $game['player2']['currentField'];
+                    $player2->balance = $game['player2']['balance'];
                     $player2->save();
                 $player3 = Player::find($currentGame->player_3);
                     $player3->field_no = $game['player3']['currentField'];
+                    $player3->balance = $game['player3']['balance'];
                     $player3->save();
                 $player4 = Player::find($currentGame->player_4);
                     $player4->field_no = $game['player4']['currentField'];
+                    $player4->balance = $game['player4']['balance'];
                     $player4->save();
-
-                error_log('========================================================');
+/*
+                error_log('========================================================');*/
                 return response()->json([
                     'message' => "We've got ajax request!"
                 ]);

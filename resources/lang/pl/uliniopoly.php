@@ -42,7 +42,7 @@ return [
         'create' => 'Stwórz grę',
         'edit' => 'Edytuj grę',
         'board_name' => 'Nazwa planszy',
-        'cash' => 'Gotówka',
+        'balance' => 'Konto',
     ],
 
     'players' => [
@@ -51,7 +51,7 @@ return [
         'list' => 'Lista graczy',
         'pick' => 'Wybierz gracza',
         'name' => 'Imię',
-        'cash' => 'Gotówka',
+        'balance' => 'Konto',
     ],
 
 ];

@@ -49,12 +49,11 @@ class Player {
 
     move(steps){
         this.currentField = (this.currentField + +steps) % 40;
+        board[this.currentField].action(this);
         $('#player_'+this.getOrder()+'_field').text(this.getCurrentField());
     }
 
     jumpTo(field){ this.currentField = +field; }
-
-    account(amount){ this.balance += +amount;}
 
     getName(){ return this.name;}
 
@@ -63,8 +62,15 @@ class Player {
     getOrder(){ return this.order;}
 
     getBalance(){ return this.balance; }
+    setBalance(balance){ this.balance = +balance;}
+
+    changeBalance(amount){
+        this.balance+= +amount ;
+        $('#player_'+this.getOrder()+'_balance').text('$'+this.balance);
+    }
 
     getCurrentField(){ return this.currentField; }
+    setCurrentField(currentField){ this.currentField = +currentField;}
 }
 
 class Game{
@@ -83,6 +89,7 @@ class Game{
     getBoardId(){ return this.boardId;}
     getPlayersCount(){ return this.playersCount; }
     getCurrentPlayer(){ return this.currentPlayer;}
+    setCurrentPlayer(currentPlayer){ this.currentPlayer = +currentPlayer; }
     getPlayer1(){ return this.player1;}
     getPlayer2(){ return this.player2;}
     getPlayer3(){ return this.player3;}
@@ -94,6 +101,13 @@ class Game{
         }
         $('#current_player').text(this.currentPlayer);
         console.log('Next player is: '+this.getCurrentPlayer());
+        for(let j = 0 ; j < this.getPlayersCount() ; j++) {
+            if ((j + 1) === this.getCurrentPlayer()) {
+                $("#player_" + (j + 1) + "_active").append('<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-left-circle-fill" viewBox="0 0 16 16">\n' +
+                    '  <path d="M8 0a8 8 0 1 0 0 16A8 8 0 0 0 8 0zm3.5 7.5a.5.5 0 0 1 0 1H5.707l2.147 2.146a.5.5 0 0 1-.708.708l-3-3a.5.5 0 0 1 0-.708l3-3a.5.5 0 1 1 .708.708L5.707 7.5H11.5z"/>\n' +
+                    '</svg>');
+            }
+        }
     }
     getPlayer(player){
         if(player === 1){ return this.player1;}
@@ -111,16 +125,83 @@ class Game{
         }
         for(let j = 0 ; j < this.getPlayersCount() ; j++){
             $("#player_"+(j+1)+"_active").text('');
-            if((j+1)===this.getCurrentPlayer()){
-                $("#player_"+(j+1)+"_active").append('<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-left-circle-fill" viewBox="0 0 16 16">\n' +
-                    '  <path d="M8 0a8 8 0 1 0 0 16A8 8 0 0 0 8 0zm3.5 7.5a.5.5 0 0 1 0 1H5.707l2.147 2.146a.5.5 0 0 1-.708.708l-3-3a.5.5 0 0 1 0-.708l3-3a.5.5 0 1 1 .708.708L5.707 7.5H11.5z"/>\n' +
-                    '</svg>');
-            }
         }
     }
 }
 
 let theGame = null;
+
+class Field {
+    constructor(field_no) {
+        this.field_no = field_no;
+    }
+
+    getFieldNo(){ return this.field_no ;}
+
+    action(player){
+        console.log("Player "+player.name+" has landed on field no " +this.getFieldNo());
+        this.handlePlayer(player);
+    }
+
+    handlePlayer(player){
+
+    }
+}
+
+class StartField extends Field{
+
+    handlePlayer(player){
+        console.log(""+player.name+" welcome on START FIELD");
+    }
+}
+
+class GoToJailField extends Field{
+
+    handlePlayer(player){
+        console.log(""+player.name+" goes to jail!");
+        player.jumpTo(10);
+    }
+}
+
+class FreeParkingField extends Field{
+
+    handlePlayer(player){
+        console.log(""+player.name+" is resting on Free Parking!");
+    }
+}
+
+class IncomeTaxField extends Field{
+
+    handlePlayer(player){
+        console.log(""+player.name+" has to pay IncomeTax! 200! ");
+        player.changeBalance(-200);
+    }
+}
+class JailField extends Field{
+
+    handlePlayer(player){
+        console.log(""+player.name+" Is visiting jail prisoners (better not to stay here for to long).");
+    }
+}
+
+let board = [];
+
+for(let k = 0 ; k < 40 ; k++){
+    if(k===0){
+        board[k] = new StartField(k);
+    } else if (k===4){
+        board[k] = new IncomeTaxField(k);
+    } else if (k===10){
+        board[k] = new JailField(k);
+    } else if (k===20){
+        board[k] = new FreeParkingField(k);
+    } else if (k===30){
+        board[k] = new GoToJailField(k);
+    } else {
+        board[k] = new Field(k);
+    }
+}
+
 
 function drawPlayer(color_no){
     return '<span class="inline"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="'+colors[color_no]+'" class="bi bi-person" viewBox="0 0 16 16">'
@@ -131,14 +212,6 @@ function drawPlayer(color_no){
 function clearFields(){
     for(let i = 0 ; i < 40 ; i++){
         $('#field_'+i+'').children('.players_dock').text('');
-    }
-}
-
-function drawPlayers(){
-    let players_count = $('#players_count').text();
-    for(let i = 0 ; i < players_count ; i++){
-        let player_field = $('#player_'+(i+1)+'_field').text();
-        $('#field_'+player_field+'').children('.players_dock').append(drawPlayer(i+1));
     }
 }
 
@@ -159,7 +232,7 @@ function drawDices(){
     return +totalDrawn;
 }
 
-function updateGame(game){
+function pushGame(game){
     $.ajax({
         type: 'post',
         url: baseUrl + 'games',
@@ -177,17 +250,7 @@ $(function(){
 
     $('.move').click(function() {
 
-        /*retrieveGame();*/
-
-        theGame.getPlayer(theGame.getCurrentPlayer()).move(drawDices());
-
-        clearFields();
-
-        theGame.drawPlayers();
-
-        theGame.nextPlayer();
-
-        updateGame(theGame);
+        pullGame();
 
     });
 })
@@ -212,23 +275,63 @@ function retrieveGame(){
     }).done(function(data)
     {
         if(data.user_1){
-            players[0] = new Player(data.user_1.name,data.game.player1.id, 1, data.game.player1.cash, data.game.player1.field_no) ;
-            console.log("Player1->cash:" + players[0].getBalance() + ", currentField: " + players[0].getCurrentField());
+            players[0] = new Player(data.user_1.name,data.game.player1.id, 1, data.game.player1.balance, data.game.player1.field_no) ;
         }
         if(data.user_2){
-            players[1] = new Player(data.user_2.name,data.game.player2.id, 2, data.game.player2.cash, data.game.player2.field_no) ;
+            players[1] = new Player(data.user_2.name,data.game.player2.id, 2, data.game.player2.balance, data.game.player2.field_no) ;
         }
         if(data.user_3){
-            players[2] = new Player(data.user_3.name,data.game.player3.id, 3, data.game.player3.cash, data.game.player3.field_no) ;
+            players[2] = new Player(data.user_3.name,data.game.player3.id, 3, data.game.player3.balance, data.game.player3.field_no) ;
         }
         if(data.user_4){
-            players[3] = new Player(data.user_4.name,data.game.player4.id, 4, data.game.player4.cash, data.game.player4.field_no) ;
+            players[3] = new Player(data.user_4.name,data.game.player4.id, 4, data.game.player4.balance, data.game.player4.field_no) ;
         }
         theGame = new Game(data.game.id,data.board_id,data.playersCount,data.game.current_player,players);
 
     }).then(function(){
         theGame.drawPlayers();
         console.log('data retrieved');
+
+    });
+}
+
+function pullGame(){
+
+    let gameID = $('#game_id').data("id");
+    console.log("Pulling game");
+    $.ajax({
+        url: baseUrl + "games/" + gameID + "/retrieve",
+    }).done(function(data)
+    {
+        if(data.user_1){
+            theGame.getPlayer(1).setBalance(data.game.player1.balance);
+            theGame.getPlayer(1).setCurrentField(data.game.player1.field_no);
+        }
+        if(data.user_2){
+            theGame.getPlayer(2).setBalance(data.game.player2.balance);
+            theGame.getPlayer(2).setCurrentField(data.game.player2.field_no);
+        }
+        if(data.user_3){
+            theGame.getPlayer(3).setBalance(data.game.player3.balance);
+            theGame.getPlayer(3).setCurrentField(data.game.player3.field_no);
+        }
+        if(data.user_4){
+            theGame.getPlayer(4).setBalance(data.game.player4.balance);
+            theGame.getPlayer(4).setCurrentField(data.game.player4.field_no);
+        }
+
+        theGame.setCurrentPlayer(data.game.current_player);
+
+    }).then(function(){
+        theGame.getPlayer(theGame.getCurrentPlayer()).move(drawDices());
+
+        clearFields();
+
+        theGame.drawPlayers();
+
+        theGame.nextPlayer();
+
+        pushGame(theGame);
 
     });
 }

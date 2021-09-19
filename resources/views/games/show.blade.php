@@ -16,7 +16,7 @@
                                 <thead>
                                     <tr>
                                         <th>{{__('uliniopoly.players.player')}}</th>
-                                        <th>{{__('uliniopoly.games.cash')}}</th>
+                                        <th>{{__('uliniopoly.games.balance')}}</th>
                                         <th>{{__('uliniopoly.fields.field')}}</th>
                                         <th></th>
                                     </tr>
@@ -25,7 +25,7 @@
                                 @foreach($game->players() as $key => $player)
                                     <tr id="player_{{($key+1)}}_stats_row">
                                         <td>#{{$key+1}} {{$player->user->name}}</td>
-                                        <td>{{$player->cash}}</td>
+                                        <td id="player_{{($key+1)}}_balance">${{$player->balance}}</td>
                                         <td id="player_{{$key+1}}_field">{{$player->field_no}}</td>
                                         <td id="player_{{$key+1}}_active"></td>
                                     </tr>

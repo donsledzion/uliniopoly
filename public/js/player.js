@@ -3,6 +3,22 @@ var __webpack_exports__ = {};
 /*!********************************!*\
   !*** ./resources/js/player.js ***!
   \********************************/
+function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
+
+function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
+
+function _createSuper(Derived) { var hasNativeReflectConstruct = _isNativeReflectConstruct(); return function _createSuperInternal() { var Super = _getPrototypeOf(Derived), result; if (hasNativeReflectConstruct) { var NewTarget = _getPrototypeOf(this).constructor; result = Reflect.construct(Super, arguments, NewTarget); } else { result = Super.apply(this, arguments); } return _possibleConstructorReturn(this, result); }; }
+
+function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } else if (call !== void 0) { throw new TypeError("Derived constructors may only return object or undefined"); } return _assertThisInitialized(self); }
+
+function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
+
+function _isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !Reflect.construct) return false; if (Reflect.construct.sham) return false; if (typeof Proxy === "function") return true; try { Boolean.prototype.valueOf.call(Reflect.construct(Boolean, [], function () {})); return true; } catch (e) { return false; } }
+
+function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
+
 function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _unsupportedIterableToArray(arr, i) || _nonIterableRest(); }
 
 function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
@@ -44,17 +60,13 @@ var Player = /*#__PURE__*/function () {
     key: "move",
     value: function move(steps) {
       this.currentField = (this.currentField + +steps) % 40;
+      board[this.currentField].action(this);
       $('#player_' + this.getOrder() + '_field').text(this.getCurrentField());
     }
   }, {
     key: "jumpTo",
     value: function jumpTo(field) {
       this.currentField = +field;
-    }
-  }, {
-    key: "account",
-    value: function account(amount) {
-      this.balance += +amount;
     }
   }, {
     key: "getName",
@@ -77,9 +89,25 @@ var Player = /*#__PURE__*/function () {
       return this.balance;
     }
   }, {
+    key: "setBalance",
+    value: function setBalance(balance) {
+      this.balance = +balance;
+    }
+  }, {
+    key: "changeBalance",
+    value: function changeBalance(amount) {
+      this.balance += +amount;
+      $('#player_' + this.getOrder() + '_balance').text('$' + this.balance);
+    }
+  }, {
     key: "getCurrentField",
     value: function getCurrentField() {
       return this.currentField;
+    }
+  }, {
+    key: "setCurrentField",
+    value: function setCurrentField(currentField) {
+      this.currentField = +currentField;
     }
   }]);
 
@@ -135,6 +163,11 @@ var Game = /*#__PURE__*/function () {
       return this.currentPlayer;
     }
   }, {
+    key: "setCurrentPlayer",
+    value: function setCurrentPlayer(currentPlayer) {
+      this.currentPlayer = +currentPlayer;
+    }
+  }, {
     key: "getPlayer1",
     value: function getPlayer1() {
       return this.player1;
@@ -165,6 +198,12 @@ var Game = /*#__PURE__*/function () {
 
       $('#current_player').text(this.currentPlayer);
       console.log('Next player is: ' + this.getCurrentPlayer());
+
+      for (var j = 0; j < this.getPlayersCount(); j++) {
+        if (j + 1 === this.getCurrentPlayer()) {
+          $("#player_" + (j + 1) + "_active").append('<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-left-circle-fill" viewBox="0 0 16 16">\n' + '  <path d="M8 0a8 8 0 1 0 0 16A8 8 0 0 0 8 0zm3.5 7.5a.5.5 0 0 1 0 1H5.707l2.147 2.146a.5.5 0 0 1-.708.708l-3-3a.5.5 0 0 1 0-.708l3-3a.5.5 0 1 1 .708.708L5.707 7.5H11.5z"/>\n' + '</svg>');
+        }
+      }
     }
   }, {
     key: "getPlayer",
@@ -190,10 +229,6 @@ var Game = /*#__PURE__*/function () {
 
       for (var j = 0; j < this.getPlayersCount(); j++) {
         $("#player_" + (j + 1) + "_active").text('');
-
-        if (j + 1 === this.getCurrentPlayer()) {
-          $("#player_" + (j + 1) + "_active").append('<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-left-circle-fill" viewBox="0 0 16 16">\n' + '  <path d="M8 0a8 8 0 1 0 0 16A8 8 0 0 0 8 0zm3.5 7.5a.5.5 0 0 1 0 1H5.707l2.147 2.146a.5.5 0 0 1-.708.708l-3-3a.5.5 0 0 1 0-.708l3-3a.5.5 0 1 1 .708.708L5.707 7.5H11.5z"/>\n' + '</svg>');
-        }
       }
     }
   }]);
@@ -203,6 +238,157 @@ var Game = /*#__PURE__*/function () {
 
 var theGame = null;
 
+var Field = /*#__PURE__*/function () {
+  function Field(field_no) {
+    _classCallCheck(this, Field);
+
+    this.field_no = field_no;
+  }
+
+  _createClass(Field, [{
+    key: "getFieldNo",
+    value: function getFieldNo() {
+      return this.field_no;
+    }
+  }, {
+    key: "action",
+    value: function action(player) {
+      console.log("Player " + player.name + " has landed on field no " + this.getFieldNo());
+      this.handlePlayer(player);
+    }
+  }, {
+    key: "handlePlayer",
+    value: function handlePlayer(player) {}
+  }]);
+
+  return Field;
+}();
+
+var StartField = /*#__PURE__*/function (_Field) {
+  _inherits(StartField, _Field);
+
+  var _super = _createSuper(StartField);
+
+  function StartField() {
+    _classCallCheck(this, StartField);
+
+    return _super.apply(this, arguments);
+  }
+
+  _createClass(StartField, [{
+    key: "handlePlayer",
+    value: function handlePlayer(player) {
+      console.log("" + player.name + " welcome on START FIELD");
+    }
+  }]);
+
+  return StartField;
+}(Field);
+
+var GoToJailField = /*#__PURE__*/function (_Field2) {
+  _inherits(GoToJailField, _Field2);
+
+  var _super2 = _createSuper(GoToJailField);
+
+  function GoToJailField() {
+    _classCallCheck(this, GoToJailField);
+
+    return _super2.apply(this, arguments);
+  }
+
+  _createClass(GoToJailField, [{
+    key: "handlePlayer",
+    value: function handlePlayer(player) {
+      console.log("" + player.name + " goes to jail!");
+      player.jumpTo(10);
+    }
+  }]);
+
+  return GoToJailField;
+}(Field);
+
+var FreeParkingField = /*#__PURE__*/function (_Field3) {
+  _inherits(FreeParkingField, _Field3);
+
+  var _super3 = _createSuper(FreeParkingField);
+
+  function FreeParkingField() {
+    _classCallCheck(this, FreeParkingField);
+
+    return _super3.apply(this, arguments);
+  }
+
+  _createClass(FreeParkingField, [{
+    key: "handlePlayer",
+    value: function handlePlayer(player) {
+      console.log("" + player.name + " is resting on Free Parking!");
+    }
+  }]);
+
+  return FreeParkingField;
+}(Field);
+
+var IncomeTaxField = /*#__PURE__*/function (_Field4) {
+  _inherits(IncomeTaxField, _Field4);
+
+  var _super4 = _createSuper(IncomeTaxField);
+
+  function IncomeTaxField() {
+    _classCallCheck(this, IncomeTaxField);
+
+    return _super4.apply(this, arguments);
+  }
+
+  _createClass(IncomeTaxField, [{
+    key: "handlePlayer",
+    value: function handlePlayer(player) {
+      console.log("" + player.name + " has to pay IncomeTax! 200! ");
+      player.changeBalance(-200);
+    }
+  }]);
+
+  return IncomeTaxField;
+}(Field);
+
+var JailField = /*#__PURE__*/function (_Field5) {
+  _inherits(JailField, _Field5);
+
+  var _super5 = _createSuper(JailField);
+
+  function JailField() {
+    _classCallCheck(this, JailField);
+
+    return _super5.apply(this, arguments);
+  }
+
+  _createClass(JailField, [{
+    key: "handlePlayer",
+    value: function handlePlayer(player) {
+      console.log("" + player.name + " Is visiting jail prisoners (better not to stay here for to long).");
+    }
+  }]);
+
+  return JailField;
+}(Field);
+
+var board = [];
+
+for (var k = 0; k < 40; k++) {
+  if (k === 0) {
+    board[k] = new StartField(k);
+  } else if (k === 4) {
+    board[k] = new IncomeTaxField(k);
+  } else if (k === 10) {
+    board[k] = new JailField(k);
+  } else if (k === 20) {
+    board[k] = new FreeParkingField(k);
+  } else if (k === 30) {
+    board[k] = new GoToJailField(k);
+  } else {
+    board[k] = new Field(k);
+  }
+}
+
 function drawPlayer(color_no) {
   return '<span class="inline"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="' + colors[color_no] + '" class="bi bi-person" viewBox="0 0 16 16">' + '<path d="M8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm2-3a2 2 0 1 1-4 0 2 2 0 0 1 4 0zm4 8c0 1-1 1-1 1H3s-1 0-1-1 1-4 6-4 6 3 6 4zm-1-.004c-.001-.246-.154-.986-.832-1.664C11.516 10.68 10.289 10 8 10c-2.29 0-3.516.68-4.168 1.332-.678.678-.83 1.418-.832 1.664h10z"/>' + '</svg></span>';
 }
@@ -210,15 +396,6 @@ function drawPlayer(color_no) {
 function clearFields() {
   for (var i = 0; i < 40; i++) {
     $('#field_' + i + '').children('.players_dock').text('');
-  }
-}
-
-function drawPlayers() {
-  var players_count = $('#players_count').text();
-
-  for (var i = 0; i < players_count; i++) {
-    var player_field = $('#player_' + (i + 1) + '_field').text();
-    $('#field_' + player_field + '').children('.players_dock').append(drawPlayer(i + 1));
   }
 }
 
@@ -241,7 +418,7 @@ function drawDices() {
   return +totalDrawn;
 }
 
-function updateGame(game) {
+function pushGame(game) {
   $.ajax({
     type: 'post',
     url: baseUrl + 'games',
@@ -261,12 +438,7 @@ function updateGame(game) {
 $(function () {
   retrieveGame();
   $('.move').click(function () {
-    /*retrieveGame();*/
-    theGame.getPlayer(theGame.getCurrentPlayer()).move(drawDices());
-    clearFields();
-    theGame.drawPlayers();
-    theGame.nextPlayer();
-    updateGame(theGame);
+    pullGame();
   });
 });
 /**************************************************************
@@ -288,26 +460,61 @@ function retrieveGame() {
     url: baseUrl + "games/" + gameID + "/retrieve"
   }).done(function (data) {
     if (data.user_1) {
-      players[0] = new Player(data.user_1.name, data.game.player1.id, 1, data.game.player1.cash, data.game.player1.field_no);
-      console.log("Player1->cash:" + players[0].getBalance() + ", currentField: " + players[0].getCurrentField());
+      players[0] = new Player(data.user_1.name, data.game.player1.id, 1, data.game.player1.balance, data.game.player1.field_no);
     }
 
     if (data.user_2) {
-      players[1] = new Player(data.user_2.name, data.game.player2.id, 2, data.game.player2.cash, data.game.player2.field_no);
+      players[1] = new Player(data.user_2.name, data.game.player2.id, 2, data.game.player2.balance, data.game.player2.field_no);
     }
 
     if (data.user_3) {
-      players[2] = new Player(data.user_3.name, data.game.player3.id, 3, data.game.player3.cash, data.game.player3.field_no);
+      players[2] = new Player(data.user_3.name, data.game.player3.id, 3, data.game.player3.balance, data.game.player3.field_no);
     }
 
     if (data.user_4) {
-      players[3] = new Player(data.user_4.name, data.game.player4.id, 4, data.game.player4.cash, data.game.player4.field_no);
+      players[3] = new Player(data.user_4.name, data.game.player4.id, 4, data.game.player4.balance, data.game.player4.field_no);
     }
 
     theGame = new Game(data.game.id, data.board_id, data.playersCount, data.game.current_player, players);
   }).then(function () {
     theGame.drawPlayers();
     console.log('data retrieved');
+  });
+}
+
+function pullGame() {
+  var gameID = $('#game_id').data("id");
+  console.log("Pulling game");
+  $.ajax({
+    url: baseUrl + "games/" + gameID + "/retrieve"
+  }).done(function (data) {
+    if (data.user_1) {
+      theGame.getPlayer(1).setBalance(data.game.player1.balance);
+      theGame.getPlayer(1).setCurrentField(data.game.player1.field_no);
+    }
+
+    if (data.user_2) {
+      theGame.getPlayer(2).setBalance(data.game.player2.balance);
+      theGame.getPlayer(2).setCurrentField(data.game.player2.field_no);
+    }
+
+    if (data.user_3) {
+      theGame.getPlayer(3).setBalance(data.game.player3.balance);
+      theGame.getPlayer(3).setCurrentField(data.game.player3.field_no);
+    }
+
+    if (data.user_4) {
+      theGame.getPlayer(4).setBalance(data.game.player4.balance);
+      theGame.getPlayer(4).setCurrentField(data.game.player4.field_no);
+    }
+
+    theGame.setCurrentPlayer(data.game.current_player);
+  }).then(function () {
+    theGame.getPlayer(theGame.getCurrentPlayer()).move(drawDices());
+    clearFields();
+    theGame.drawPlayers();
+    theGame.nextPlayer();
+    pushGame(theGame);
   });
 }
 /******/ })()

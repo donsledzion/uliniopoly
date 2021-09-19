@@ -23,6 +23,8 @@
     },
     "dependencies": {
         "@moesaid/cleopatra": "^1.1.1",
+        "laravel-echo": "^1.11.2",
+        "pusher-js": "^7.0.3",
         "sweetalert": "^2.1.2",
         "sweetalert2": "^11.1.5"
     }

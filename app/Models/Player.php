@@ -13,7 +13,7 @@ class Player extends Model
     protected $fillable = [
         'user_id',
         'field_no',
-        'cash',
+        'balance',
     ];
 
     protected $casts = [
