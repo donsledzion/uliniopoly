@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -14,7 +15,6 @@ class Board extends Model
     protected $fillable = [
         'name',
         'description',
-        'fields',
     ];
 
     protected $casts = [
@@ -23,8 +23,19 @@ class Board extends Model
     ];
 
 
+    public function slots():belongsToMany
+    {
+        return $this->belongsToMany(BoardSlot::class,'board_slot_field')->withPivot('field_id');
+    }
+
     public function fields():belongsToMany
     {
-        return $this->belongsToMany(Field::class);
+        return $this->belongsToMany(Field::class,'board_slot_field')->withPivot('board_slot_id');
     }
+
+    public function games():hasMany
+    {
+        return $this->hasMany(Game::class);
+    }
+
 }

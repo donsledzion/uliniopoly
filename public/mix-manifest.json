@@ -3,5 +3,7 @@
     "/js/delete.js": "/js/delete.js",
     "/js/dices.js": "/js/dices.js",
     "/js/player.js": "/js/player.js",
+    "/js/game.js": "/js/game.js",
+    "/js/create-board.js": "/js/create-board.js",
     "/css/app.css": "/css/app.css"
 }

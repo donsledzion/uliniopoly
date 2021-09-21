@@ -67,8 +67,8 @@
                             <tr class="bg-gray-100 text-center border-b text-sm text-gray-600">
 
                                 <td class="p-2 border-r">{{$fieldType->id}}</td>
-                                <td class="p-2 border-r">{{$fieldType->name}}</td>
-                                <td class="p-2 border-r">{{$fieldType->description}}</td>
+                                <td class="p-2 border-r">{{__($fieldType->name)}}</td>
+                                <td class="p-2 border-r">{{__($fieldType->description)}}</td>
                                 <td class="p-2 border-r" >
                                 @if($fieldType->unique)
                                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">

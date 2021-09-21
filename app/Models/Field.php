@@ -18,11 +18,13 @@ class Field extends Model
         'field_type_id',
         'group',
         'pricing_id',
+        'salable',
         'sold',
         'mortgage'
     ] ;
 
     protected $casts = [
+        'salable' => 'boolean',
         'sold' => 'boolean',
         'mortgage' => 'boolean',
         'created_at' => 'boolean',
@@ -31,7 +33,7 @@ class Field extends Model
 
     public function boards():belongsToMany
     {
-        return $this->belongsToMany(Board::class);
+        return $this->belongsToMany(Board::class,'board_slot_field')->withPivot('board_slot_id');
     }
 
     public function type():belongsTo
@@ -43,4 +45,15 @@ class Field extends Model
     {
         return $this->hasOne(Pricing::class,'id');
     }
+
+    public function action(Player $player)
+    {
+        $message = 'Player '.$player->user->name.' is supposed to take some action on' ;
+        error_log("Action message: ".$message);
+        return response()->json([
+            'message' => $message,
+        ]);
+    }
+
+
 }

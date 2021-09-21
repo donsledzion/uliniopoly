@@ -59,8 +59,8 @@
                                 <tr class="bg-gray-100 text-center border-b text-sm text-gray-600">
 
                                     <td class="p-2 border-r">{{$board->id}}</td>
-                                    <td class="p-2 border-r">{{$board->name}}</td>
-                                    <td class="p-2 border-r">{{$board->description}}</td>
+                                    <td class="p-2 border-r">{{__($board->name)}}</td>
+                                    <td class="p-2 border-r">{{__($board->description)}}</td>
 
                                     <td class="justify-center">
                                         <a href="{{route('boards.show',$board->id)}}" data-id="{{$board->id}}" class="bg-yellow-500 p-2 text-white hover:shadow-lg text-xs font-thin">{{__('buttons.show')}}</a>
@@ -82,9 +82,9 @@
             const yesResponse = "{{ __('swalerts.yes') }}";
             const noResponse = "{{ __('swalerts.no') }}";
             $(function(){
-            $('.add-board').click(function(){
-            window.location.href = "{{route('boards.create')}}";
-            })
+                $('.add-board').click(function(){
+                    window.location.href = "{{route('boards.create')}}";
+                })
             })
         @endsection
         @section('js-files')

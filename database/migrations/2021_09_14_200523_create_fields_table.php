@@ -20,10 +20,8 @@ class CreateFieldsTable extends Migration
             $table->unsignedBigInteger('field_type_id');
             $table->foreign('field_type_id')->references('id')->on('field_types');
             $table->unsignedBigInteger('pricing_id')->nullable();
+            $table->boolean('salable')->default(false);
             $table->foreign('pricing_id')->references('id')->on('pricings');
-            $table->unsignedBigInteger('group')->nullable();
-            $table->boolean('sold')->default(false);
-            $table->boolean('mortgage')->default(false);
             $table->timestamps();
         });
     }

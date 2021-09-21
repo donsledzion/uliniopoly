@@ -15,6 +15,8 @@ mix.js('resources/js/app.js', 'public/js')
     .js('resources/js/delete.js', 'public/js')
     .js('resources/js/dices.js', 'public/js')
     .js('resources/js/player.js', 'public/js')
+    .js('resources/js/game.js', 'public/js')
+    .js('resources/js/create-board.js', 'public/js')
     .postCss('resources/css/app.css', 'public/css', [
     require('postcss-import'),
     require('tailwindcss'),

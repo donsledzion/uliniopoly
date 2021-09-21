@@ -16,20 +16,12 @@ class CreateGamesTable extends Migration
         Schema::create('games', function (Blueprint $table) {
             $table->id();
 
-            $table->unsignedBigInteger('board_id')->nullable();
+            $table->string('name')->default(__('uliniopoly.games.default_name'));
+
+            $table->unsignedBigInteger('board_id');
             $table->foreign('board_id')->references('id')->on('boards');
 
-            $table->unsignedBigInteger('player_1')->nullable();
-            $table->foreign('player_1')->references('id')->on('players');
-
-            $table->unsignedBigInteger('player_2')->nullable();
-            $table->foreign('player_2')->references('id')->on('players');
-
-            $table->unsignedBigInteger('player_3')->nullable();
-            $table->foreign('player_3')->references('id')->on('players');
-
-            $table->unsignedBigInteger('player_4')->nullable();
-            $table->foreign('player_4')->references('id')->on('players');
+            $table->unsignedSmallInteger('start_balance')->default(1500);
 
             $table->unsignedSmallInteger('current_player')->default(1);
 

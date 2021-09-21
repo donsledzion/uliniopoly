@@ -49,6 +49,7 @@ class Player {
 
     move(steps){
         this.currentField = (this.currentField + +steps) % 40;
+        this.currentField = (this.currentField + +steps) % 40;
         board[this.currentField].action(this);
         $('#player_'+this.getOrder()+'_field').text(this.getCurrentField());
     }
@@ -295,9 +296,34 @@ function retrieveGame(){
     });
 }
 
-function pullGame(){
+function listen(gameID){
+    if(theGame) {
+        Echo.channel('game' + gameID)
+            .listen('PlayerMoved', (game) => {
+                console.log('====================================');
+                console.log('=========== listener works!=========');
+                console.log('====================================');
+                $('#infobox_1').text(game.getPlayersCount());
+            });
+    } else {
+        console.log('====================================');
+        console.log('===== the game is not defined! =====');
+        console.log('====================================');
+    }
+}
 
+window.Echo.channel('game.' + $('#game_id').data("id"))
+    .listen('PlayerMoved', (game) => {
+        console.log('====================================');
+        console.log('=========== listener works!=========');
+        console.log('====================================');
+        $('#infobox_1').text("Game name: "+game.game.name+", current player: "+game.game.current_player);
+
+    });
+
+function pullGame(){
     let gameID = $('#game_id').data("id");
+
     console.log("Pulling game");
     $.ajax({
         url: baseUrl + "games/" + gameID + "/retrieve",
@@ -323,15 +349,22 @@ function pullGame(){
         theGame.setCurrentPlayer(data.game.current_player);
 
     }).then(function(){
-        theGame.getPlayer(theGame.getCurrentPlayer()).move(drawDices());
+        $.ajax({
+            method: 'post',
+            url: baseUrl + "api/games/"+gameID+"/"+theGame.getCurrentPlayer()
+        }).then(function(){
 
-        clearFields();
+            theGame.getPlayer(theGame.getCurrentPlayer()).move(drawDices());
 
-        theGame.drawPlayers();
+            clearFields();
 
-        theGame.nextPlayer();
+            theGame.drawPlayers();
 
-        pushGame(theGame);
+            theGame.nextPlayer();
+
+            pushGame(theGame);
+        })
+
 
     });
 }

@@ -75,9 +75,9 @@
                             <tr class="bg-gray-100 text-center border-b text-sm text-gray-600">
 
                                 <td class="p-2 border-r">{{$field->id}}</td>
-                                <td class="p-2 border-r">{{$field->name}}</td>
-                                <td class="p-2 border-r">{{$field->description}}</td>
-                                <td class="p-2 border-r">{{$field->type->name}}</td>
+                                <td class="p-2 border-r">{{__($field->name)}}</td>
+                                <td class="p-2 border-r">{{__($field->description)}}</td>
+                                <td class="p-2 border-r">{{__($field->type->name)}}</td>
                                 <td class="p-2 border-r">
                                     @if($field->pricing)
                                     <table>

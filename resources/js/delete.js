@@ -1,5 +1,8 @@
 $(function(){
     $('.delete').click(function(){
+        console.log("This.data(class): "+$(this).data("class")+", This.data(id): "+$(this).data("id"));
+        let deleteURL = deleteUrl + $(this).data("class")+ "/" + $(this).data("id") ;
+        console.log("full DELETE url: "+deleteURL);
         Swal.fire({
             title: confirmDelete,
             text: $(this).data("prompt"),
@@ -13,7 +16,7 @@ $(function(){
             if (result.isConfirmed) {
                 $.ajax({
                     method: "DELETE",
-                    url: deleteUrl + $(this).data("class")+ "/" + $(this).data("id")
+                    url: deleteURL
                 })
                     .done(function( data ) {
                         Swal.fire({

@@ -117,8 +117,10 @@ class FieldController extends Controller
     public function edit(Field $field):View
     {
         try{
+            $fieldTypes = FieldType::all();
             return view('fields.edit',[
                 'field' => $field,
+                'fieldTypes' => $fieldTypes,
             ]);
         }catch(\Exception $e){
             Log::error("An exception was thrown while displaying Field's edition form: ".$e->getMessage());

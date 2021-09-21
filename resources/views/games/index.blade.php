@@ -67,21 +67,21 @@
                             <tr class="bg-gray-100 text-center border-b text-sm text-gray-600">
 
                                 <td class="p-2 border-r">{{$game->id}}</td>
-                                <td class="p-2 border-r">{{$game->name}}</td>
-                                <td class="p-2 border-r">{{$game->board->name}}</td>
+                                <td class="p-2 border-r">{{__($game->name)}}</td>
+                                <td class="p-2 border-r">{{__($game->board->name)}}</td>
                                 <td class="p-2 border-r">
                                     @if($game->players())
                                     <table>
                                         <thead>
                                             <tr>
                                                 <th>{{__('uliniopoly.players.name')}}</th>
-                                                <th>{{__('uliniopoly.players.cash')}}</th>
+                                                <th>{{__('uliniopoly.players.balance')}}</th>
                                             </tr>
                                         </thead>
                                         <tbody>
-                                        @foreach($game->players() as $player)
+                                        @foreach($game->players as $player)
                                             <tr>
-                                                <td>{{$player->user->name}}</td><td>{{$player->cash}}</td>
+                                                <td>{{$player->user->name}}</td><td>{{$player->balance}}</td>
                                             </tr>
                                         @endforeach
                                         </tbody>

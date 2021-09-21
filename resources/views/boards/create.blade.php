@@ -9,7 +9,7 @@
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="w-full max-w-xs">
-                    <form class="bg-white rounded px-8 pt-6 pb-8 mb-4 " method="POST" action="{{route('boards.store')}}">
+                    <form class="board-form bg-white rounded px-8 pt-6 pb-8 mb-4 " method="POST" action="{{route('boards.store')}}">
                         @csrf
                         <div class="mb-4">
                             <label class="block text-gray-600 text-sm font-semibold mb-2" for="name">
@@ -36,53 +36,31 @@
                                 class="bg-gray-100 p-1 appearance-none border rounded w-full text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                                 id="description"
                                 name="description"
-                                type="text"
-                            /></textarea>
+                            ></textarea>
                         </div>
 
+                        @for($i = 1 ; $i < 41 ; $i++)
+                            <div class="mb-4">
+                                <label class="block text-gray-600 text-sm font-semibold mb-2" for="name">
+                                    {{__('uliniopoly.fields.field')}} #{{ $i }}
+                                </label>
+                                <select
+                                    class="bg-gray-100 appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                                    id="slot_{{$i}}"
+                                    name="slot_{{$i}}"
+                                >
+                                    <option value="-1" selected disabled hidden>
+                                        {{__('uliniopoly.fields.pick')}}
+                                    </option>
+                                    @foreach($fields as $field)
+                                        <option value="{{$field->id}}">{{__($field->name)}}</option>
+                                    @endforeach
+                                </select>
 
-                        {{--<div class="flex justify-left">
-                            <label for="unique" class="flex items-center  cursor-pointer">
-                                <div class="px-2">{{__('uliniopoly.field_types.unique')}} ?</div>
-                                <!-- toggle -->
-                                <div class="relative">
-                                    <input id="unique" name="unique" type="checkbox" class="hidden" />
-                                    <!-- path -->
-                                    <div
-                                        class="toggle-path bg-gray-200 w-9 h-5 rounded-full shadow-inner"
-                                    ></div>
-                                    <!-- circle -->
-                                    <div
-                                        class="toggle-circle absolute w-3.5 h-3.5 bg-white rounded-full shadow inset-y-0 left-0"
-                                    ></div>
-                                </div>
-                            </label>
-
-                        </div>
-                        <div class="py-2"></div>
-
-
-
-                        <style>
-
-                            .toggle-path {
-                                transition: background 0.3s ease-in-out;
-                            }
-                            .toggle-circle {
-                                top: 0.2rem;
-                                left: 0.25rem;
-                                transition: all 0.3s ease-in-out;
-                            }
-                            input:checked ~ .toggle-circle {
-                                transform: translateX(100%);
-                            }
-                            input:checked ~ .toggle-path {
-                                background-color:#81E6D9;
-                            }
-                        </style>--}}
-
+                            </div>
+                        @endfor
                         <div class="flex items-center justify-between">
-                            <button class="add-field-type bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" type="submit">
+                            <button class="add-board bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" type="submit">
                                 {{__('buttons.add')}}
                             </button>
 
@@ -97,10 +75,11 @@
         @section('javascript')
 
 
+
         @endsection
 
         @section('js-files')
-            {{--<script src="{{ asset('js/submit.js') }}" ></script>--}}
+
         @endsection
     </div>
 </x-app-layout>

@@ -36,8 +36,7 @@
                                 class="bg-gray-100 p-1 appearance-none border rounded w-full text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                                 id="description"
                                 name="description"
-                                type="text"
-                            /></textarea>
+                            ></textarea>
                         </div>
 
                         <div class="mb-4">
@@ -50,7 +49,7 @@
                                 name="field_type_id"
                             >
                                 @foreach($fieldTypes as $fieldType)
-                                    <option value="{{$fieldType->id}}">{{$fieldType->name}}</option>
+                                    <option value="{{$fieldType->id}}">{{__($fieldType->name)}}</option>
                                 @endforeach
                             </select>
 

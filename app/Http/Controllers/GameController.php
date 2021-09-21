@@ -2,6 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\GameSeat;
+use App\Events\PlayerMoved;
+use App\Http\Requests\GameRequest;
 use App\Models\Board;
 use App\Models\Game;
 use App\Models\Player;
@@ -25,7 +28,6 @@ class GameController extends Controller
     {
         try {
             $games = Game::all();
-            error_log("Games: ".$games);
             return view('games.index', [
                 'games' => $games,
             ]);
@@ -66,58 +68,21 @@ class GameController extends Controller
      * @param  Request  $request
      * @return Mixed
      */
-    public function store(Request $request)
+    public function store(GameRequest $request)
     {
         try {
-            if ($request->ajax()) {
-                /*error_log('========================================================');
-                error_log("Ajax request!");
-                error_log("Game: " . json_encode($request->game));*/
-                $game = $request->game;
-                /*error_log('========================================================');
-                error_log("game->id:".$game['id']);
-                error_log("game->boardId:".$game['boardId']);
-                error_log("game->playersCount:".$game['playersCount']);
-                error_log("game->currentPlayer:".$game['currentPlayer']);
-                error_log("game->player1->id:".$game['player1']['id']);
-                error_log("game->player1->order:".$game['player1']['order']);
-                error_log("game->player1->balance:".$game['player1']['balance']);
-                error_log("game->player1->id:".$game['player1']['order']);
-                error_log('========================================================');*/
-                $currentGame = Game::find($game['id']);
-                $currentGame->current_player = $game['currentPlayer'];
-                $currentGame->save();
-                $player1 = Player::find($currentGame->player_1);
-                    $player1->field_no = $game['player1']['currentField'];
-                    $player1->balance = $game['player1']['balance'];
-                    $player1->save();
-                $player2 = Player::find($currentGame->player_2);
-                    $player2->field_no = $game['player2']['currentField'];
-                    $player2->balance = $game['player2']['balance'];
-                    $player2->save();
-                $player3 = Player::find($currentGame->player_3);
-                    $player3->field_no = $game['player3']['currentField'];
-                    $player3->balance = $game['player3']['balance'];
-                    $player3->save();
-                $player4 = Player::find($currentGame->player_4);
-                    $player4->field_no = $game['player4']['currentField'];
-                    $player4->balance = $game['player4']['balance'];
-                    $player4->save();
-/*
-                error_log('========================================================');*/
-                return response()->json([
-                    'message' => "We've got ajax request!"
-                ]);
+            $attributes = $request->validated();
+
+            $game = Game::create($attributes);
+            foreach($attributes['players'] as $key => $user) {
+                $game->players()->create([
+                    'user_id' => $user,
+                        'game_id' => $game->id,
+                        'seat' => GameSeat::seat($key+1),
+                        'balance' => $game->start_balance,
+                        'field_no' => 1
+                    ]);
             }
-        } catch(\Exception $e) {
-            Log::error("An exception while handling ajax request from the game: ".$e->getMessage());
-            error_log("An exception while handling ajax request from the game: ".$e->getMessage());
-        }
-
-
-        try {
-            $game = Game::create($request->all());
-
             return view('games.show', [
                 'game' => $game,
             ]);
@@ -144,32 +109,10 @@ class GameController extends Controller
 
     public function retrieve(Game $game):JsonResponse
     {
-        $user1 = null ;
-        $user2 = null ;
-        $user3 = null ;
-        $user4 = null ;
-        if($game->player1) {
-            $user1 = $game->player1->user;
-        }
-        if($game->player2) {
-            $user2 = $game->player2->user;
-        }
-        if($game->player3) {
-            $user3 = $game->player3->user;
-        }
-        if($game->player4) {
-            $user4 = $game->player4->user;
-        }
-
+        $game = Game::with('players.user','board')->find($game->id);
         return response()->json([
             'game' => $game,
-            'board_id' => $game->board_id,
-            'currentPlayer' => $game->current_player,
-            'playersCount' => $game->players()->count(),
-            'user_1' => $user1,
-            'user_2' => $user2,
-            'user_3' => $user3,
-            'user_4' => $user4,
+            'players_count' => $game->players->count()
         ]);
     }
 
@@ -196,6 +139,27 @@ class GameController extends Controller
         //
     }
 
+
+    public function move(Game $game)
+    {
+        try {
+            error_log("Move it!");
+            $lastDraw = $game->nextMove();
+
+            event(new PlayerMoved($game, $lastDraw));
+
+            return response()->json($game);
+        } catch(\Exception $e){
+            error_log("GameController@move error: ".$e->getMessage());
+            return response()->json([
+                'message' => 'Shit happend',
+                'error' => $e->getMessage()
+            ]);
+        }
+    }
+
+
+
     /**
      * Remove the specified resource from storage.
      *
@@ -206,14 +170,7 @@ class GameController extends Controller
     {
         try{
             DB::beginTransaction();
-            foreach($game->players() as $player){
-
-                $playerToDelete = Player::findOrFail($player->id);
-                $game->removePlayer($playerToDelete->id);
-                $game->save();
-                $playerToDelete->delete();
-
-            }
+            $game->players()->delete();
             $game->delete();
             DB::commit();
             return response()->json([

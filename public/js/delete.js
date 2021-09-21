@@ -5,8 +5,9 @@ var __webpack_exports__ = {};
   \********************************/
 $(function () {
   $('.delete').click(function () {
-    var _this = this;
-
+    console.log("This.data(class): " + $(this).data("class") + ", This.data(id): " + $(this).data("id"));
+    var deleteURL = deleteUrl + $(this).data("class") + "/" + $(this).data("id");
+    console.log("full DELETE url: " + deleteURL);
     Swal.fire({
       title: confirmDelete,
       text: $(this).data("prompt"),
@@ -20,7 +21,7 @@ $(function () {
       if (result.isConfirmed) {
         $.ajax({
           method: "DELETE",
-          url: deleteUrl + $(_this).data("class") + "/" + $(_this).data("id")
+          url: deleteURL
         }).done(function (data) {
           Swal.fire({
             icon: 'success',
