@@ -27,6 +27,7 @@ class GameRequest extends FormRequest
             'name' => 'nullable|string',
             'board_id' => 'required|numeric|min:1',
             'start_balance' => 'required|numeric|between:100,65000',
+            'start_bonus' => 'required|numeric|between:100,6500',
             'players' => 'required|array',
             'players.*' => 'nullable|numeric|distinct|min:1',
 

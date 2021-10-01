@@ -10,4 +10,5 @@ return [
     'play' => 'Graj',
     'move' => 'Ruch',
     'read' => 'Wczytaj',
+    'end_turn' => 'Zakończ turę',
 ];

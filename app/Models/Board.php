@@ -38,4 +38,9 @@ class Board extends Model
         return $this->hasMany(Game::class);
     }
 
+    public function jail():Field
+    {
+        return $this->fields->where('field_type_id',3)->first();
+    }
+
 }

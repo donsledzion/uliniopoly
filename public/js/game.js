@@ -24,6 +24,7 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
 var Player = /*#__PURE__*/function () {
   function Player(name, id, seat, balance) {
     var currentField = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : 0;
+    var movesLeft = arguments.length > 5 && arguments[5] !== undefined ? arguments[5] : 0;
 
     _classCallCheck(this, Player);
 
@@ -32,6 +33,7 @@ var Player = /*#__PURE__*/function () {
     this.seat = seat;
     this.balance = balance;
     this.currentField = currentField;
+    this.movesLeft = movesLeft;
   }
 
   _createClass(Player, [{
@@ -151,6 +153,7 @@ var Game = /*#__PURE__*/function () {
         $('#field_' + this.getPlayer(i + 1).getCurrentField() + '').children('.players_dock').append(drawPlayer(i + 1));
         $('#player_' + (i + 1) + '_field').text(this.getPlayer(i + 1).getCurrentField());
         $('#player_' + (i + 1) + '_balance').text(this.getPlayer(i + 1).getBalance());
+        $("#player_" + (i + 1) + "_active").text('');
       }
 
       for (var j = 0; j < this.getPlayersCount(); j++) {
@@ -178,9 +181,10 @@ function retrieveGame() {
     url: baseUrl + "games/" + gameID + "/retrieve"
   }).done(function (data) {
     $.each(data.game.players, function (index, value) {
-      players[index] = new Player(value.user.name, value.id, index + 1, value.balance, value.field_no);
+      players[index] = new Player(value.name, value.id, index + 1, value.balance, value.field_no);
     });
     theGame = new Game(data.game.id, data.game.board.id, data.players_count, data.game.current_player, players);
+    updateButtons(data.game.moves_left);
   }).then(function () {
     theGame.drawPlayers();
   });
@@ -196,7 +200,14 @@ function clearFields() {
   }
 }
 
-window.Echo.channel('game.' + $('#game_id').data("id")).listen('PlayerMoved', function (game) {
+window.Echo.channel('game.' + $('#game_id').data("id")).listen('EndOfTurn', function (game) {
+  console.log("Next player!");
+  theGame.setCurrentPlayer(game.game.current_player);
+  clearFields();
+  theGame.drawPlayers();
+  updateButtons(game.movesLeft);
+});
+window.Echo.channel('game.' + $('#game_id').data("id")).listen('PlayerThrown', function (game) {
   console.log("Echo engaged!");
   $.each(game.game.players, function (index, value) {
     theGame.getPlayer(index + 1).setBalance(value.balance);
@@ -207,8 +218,25 @@ window.Echo.channel('game.' + $('#game_id').data("id")).listen('PlayerMoved', fu
   clearFields();
   theGame.drawPlayers();
   drawDices();
-  $('#infobox_1').text("Game name: " + game.game.name + ", current player: " + game.game.current_player);
+  var gameTable = $('#infobox_1');
+  gameTable.find('#current_player').text(game.game.currentPlayer);
+  gameTable.find('#result').text(lastDraw[0] + ' + ' + lastDraw[1] + ' = ' + (lastDraw[0] + lastDraw[1]));
+  gameTable.find('#actions').text(game.game.round_log);
+  updateButtons(game.movesLeft);
 });
+
+function updateButtons(movesLeft) {
+  console.log("updating buttons...");
+  console.log("Moves left: " + movesLeft + " <==");
+
+  if (movesLeft > 0) {
+    $('.end-turn').attr("disabled", "disabled");
+    $('.move').removeAttr("disabled");
+  } else {
+    $('.end-turn').removeAttr("disabled");
+    $('.move').attr("disabled", "disabled");
+  }
+}
 
 function drawDices() {
   $('#drawn_dice_1').text('');
@@ -235,7 +263,15 @@ $(function () {
   $('.move').click(function () {
     $.ajax({
       method: 'post',
-      url: baseUrl + "api/games/" + $('#game_id').data("id")
+      url: baseUrl + "api/games/" + $('#game_id').data("id") + "/throw"
+    });
+  });
+});
+$(function () {
+  $('.end-turn').click(function () {
+    $.ajax({
+      method: 'post',
+      url: baseUrl + 'api/games/' + $('#game_id').data("id") + "/end-turn"
     });
   });
 });

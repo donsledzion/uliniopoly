@@ -33,12 +33,12 @@
                                 </tbody>
                             </table>
 
-                            <button class="move bg-green-500 p-2 m-2 text-white hover:shadow-lg text-xl font-thin" type="button">
+                            <button class="move bg-green-500 p-2 m-2 text-white hover:shadow-lg disabled:opacity-30 text-xl font-thin" type="button">
                                 {{__('buttons.move')}}
                             </button>
 
-                            <button class="read-data bg-green-500 p-2 m-2 text-white hover:shadow-lg text-xl font-thin" type="button">
-                                {{__('buttons.read')}}
+                            <button class="end-turn bg-green-500 p-2 m-2 text-white hover:shadow-lg disabled:opacity-30 text-xl font-thin" type="button">
+                                {{__('buttons.end_turn')}}
                             </button>
                             <div id="drawn_dices" class="flex flex-wrap inline" style="width:72px;">
                                 <div id="drawn_dice_1" class="flex inline"></div>
@@ -67,7 +67,7 @@
                         {{-- MIDDLE ROW!!!--}}
 
                         {{-- MIDDLE ROW - LEFT COLUMN--}}
-                        <div class="h-3/4 overflow-hidden h-3/4" style="width:12.5%;">
+                        <div class="h-3/4 overflow-hidden" style="width:12.5%;">
                             <x-field-left :id="20"></x-field-left>
                             <x-field-left :id="19"></x-field-left>
                             <x-field-left :id="18"></x-field-left>
@@ -81,27 +81,70 @@
 
                         {{-- MIDDLE ROW - CENTRAL COLUMN--}}
 
-                        <div class="w-3/4 h-3/4 overflow-hidden" {{--style="width:12.5%;"--}}>
-                            <div id="infobox_1" style="width:49%;height:50%;background-color: #7B7D62; display:inline-block;"></div>
-                            <div id="infobox_2" style="width:49%;height:50%;background-color: teal; font-size: 16px; display:inline-block;">
+                        <div class="w-3/4 h-3/4 overflow-hidden flex flex-wrap">
+                            <div id="infobox_1" style="width:48%;height:50%;background-color: #7B7D62; display:inline-block; padding:2px;">
+                                <h1 style="text-align: center; font-weight: bold;">{{__('uliniopoly.games.table.game_status')}}</h1>
+                                <table style="font-size: 12px;">
+                                    <thead>
+                                        <tr>
+                                            <th>
+                                                #
+                                            </th>
+                                            <th>
+                                                Info:
+                                            </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <!--************************** ROW SEPARATOR-->
+                                        <tr>
+                                            <td>
+                                                Aktualny gracz:
+                                            </td>
+                                            <td id="current_player">
+
+                                            </td>
+                                        </tr>
+                                        <!--************************** ROW SEPARATOR-->
+                                        <tr>
+                                            <td>
+                                                Rzut:
+                                            </td>
+                                            <td id="result">
+
+                                            </td>
+                                        </tr>
+                                        <!--************************** ROW SEPARATOR-->
+                                        <tr>
+                                            <td>
+                                                Akcja:
+                                            </td>
+                                            <td id="actions">
+
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div id="infobox_2" style="width:48%;height:50%;background-color: teal; font-size: 16px; display:inline-block; padding:2px;">
                                 <table>
                                     <thead>
                                         <tr class="border">
-                                            <th>Parametr</th>
-                                            <th>Wartość</th>
+                                            <th>{{__('uliniopoly.games.table.item')}}</th>
+                                            <th>{{__('uliniopoly.games.table.value')}}</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         <tr class="border">
-                                            <td>Opis planszy:</td>
+                                            <td>{{__('uliniopoly.games.table.game_description')}}:</td>
                                             <td style="font-size: 12px;">{{__($game->board->description)}}</td>
                                         </tr>
                                         <tr class="border">
-                                            <td>Liczba graczy:</td>
+                                            <td>{{__('uliniopoly.games.table.players_counter')}}:</td>
                                             <td id="players_count">{{$game->players->count()}}</td>
                                         </tr>
                                         <tr class="border">
-                                            <td>Aktualny gracz:</td>
+                                            <td>{{__('uliniopoly.games.table.current_player')}}:</td>
                                             <td id="current_player">{{$game->current_player}}</td>
                                         </tr>
                                         <tr class="border"></tr>

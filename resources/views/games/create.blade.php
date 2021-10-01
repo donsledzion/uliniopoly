@@ -43,6 +43,19 @@
                         </div>
 
                         <div class="mb-4">
+                            <label class="block text-gray-600 text-sm font-semibold mb-2" for="start_bonus">
+                                {{__('uliniopoly.games.start_bonus')}}
+                            </label>
+                            <input
+                                class="bg-gray-100 appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                                id="start_bonus"
+                                name="start_bonus"
+                                type="number" step="50"
+                                value="200" min="100" max="6500"
+                            />
+                        </div>
+
+                        <div class="mb-4">
                             <label class="block text-gray-600 text-sm font-semibold mb-2" for="board_id">
                                 {{__('uliniopoly.boards.board')}}
                             </label>

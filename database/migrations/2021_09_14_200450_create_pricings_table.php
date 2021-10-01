@@ -27,6 +27,7 @@ class CreatePricingsTable extends Migration
             $table->unsignedInteger('stop_2_of_kind')->nullable();
             $table->unsignedInteger('stop_3_of_kind')->nullable();
             $table->unsignedInteger('stop_4_of_kind')->nullable();
+            $table->unsignedInteger('buy_cottage')->default(0)->nullable();
             $table->timestamps();
         });
     }

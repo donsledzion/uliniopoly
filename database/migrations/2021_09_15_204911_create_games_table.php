@@ -23,7 +23,13 @@ class CreateGamesTable extends Migration
 
             $table->unsignedSmallInteger('start_balance')->default(1500);
 
+            $table->unsignedSmallInteger('start_bonus')->default(200);
+
             $table->unsignedSmallInteger('current_player')->default(1);
+
+            $table->unsignedSmallInteger('doubles_in_row')->default(0);
+
+            $table->longText('round_log')->nullable();
 
             $table->timestamps();
         });

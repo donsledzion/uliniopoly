@@ -3,34 +3,31 @@
 namespace App\Events;
 
 use App\Models\Game;
-use App\Models\Player;
 use Illuminate\Broadcasting\Channel;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Broadcasting\PresenceChannel;
 use Illuminate\Broadcasting\PrivateChannel;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
-use Illuminate\Contracts\Broadcasting\ShouldBroadcastNow;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
-class PlayerMoved implements ShouldBroadcast
+class PlayerThrown implements ShouldBroadcast
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
-    public $game;
-    public $lastDraw;
-    public $fields;
-
+    private $game;
+    private $result;
+    private $fields;
     /**
      * Create a new event instance.
      *
      * @return void
      */
-    public function __construct(Game $game, array $lastDraw)
+    public function __construct(Game $game, array $result)
     {
         $this->game = $game;
-        $this->lastDraw = $lastDraw;
-        $this->fields = $this->game->board->fields;
+        $this->result = $result;
+        $this->fields = $this->game->gameFields;
     }
 
     /**
@@ -45,10 +42,13 @@ class PlayerMoved implements ShouldBroadcast
 
     public function broadcastWith(){
         $game = Game::with('players','board')->find($this->game->id);
+        $movesLeft = $this->game->currentPlayer()->moves_left;
+        error_log("PlayerThrown@broadcastWith: ");
         return [
             'game' => $game,
             'fields' => $this->fields,
-            'lastDraw' => $this->lastDraw,
+            'lastDraw' => $this->result,
+            'movesLeft' => $movesLeft,
         ];
     }
 }

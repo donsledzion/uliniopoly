@@ -62,6 +62,49 @@ return [
             'jail' => 'Ciupa!',
             'go_to_jail' => 'Idziesz do Ciupy',
             'free_parking' => 'Darmowy Parking',
+            'carriers' => [
+                'bogus_bus' => 'Boguś Bus',
+                'pks_slupsk' => 'PKS Słupsk',
+            ],
+            'services' =>[
+                'septic' => 'Szambiarka',
+                'garbage' => 'Śmieciarka',
+            ],
+            'cards' => [
+                'chance' => 'Szansa',
+                'risk' => 'Ryzyko',
+            ],
+            'properties' =>[
+                '1-1' => 'Pole namiotowe #1',
+                '1-2' => 'Pole namiotowe #2',
+
+                '2-1' => 'Domel #1',
+                '2-2' => 'Domel #2',
+                '2-3' => 'Domel #3',
+
+                '3-1' => 'Ulinia 8 #1',
+                '3-2' => 'Ulinia 8 #2',
+                '3-3' => 'Ulinia 8 #3',
+
+                '4-1' => 'Echo Rancho #1',
+                '4-2' => 'Echo Rancho #2',
+                '4-3' => 'Echo Rancho #3',
+
+                '5-1' => 'Willa Ulinia #1',
+                '5-2' => 'Willa Ulinia #2',
+                '5-3' => 'Willa Ulinia #3',
+
+                '6-1' => 'Stanica Myśliwska #1',
+                '6-2' => 'Stanica Myśliwska #2',
+                '6-3' => 'Stanica Myśliwska #3',
+
+                '7-1' => 'Ulinia Zacisze #1',
+                '7-2' => 'Ulinia Zacisze #2',
+                '7-3' => 'Ulinia Zacisze #3',
+
+                '8-1' => 'Pałac #1',
+                '8-2' => 'Pałac #2',
+            ]
         ],
 
         'descriptions' => [
@@ -83,11 +126,56 @@ return [
         'description' => 'Opis',
         'create' => 'Stwórz nową planszę',
         'names' => [
-            'default' => 'Uliniopoly!'
+            'default' => 'Uliniopoly!',
+
         ],
         'descriptions' => [
-            'default' => 'Pierwsza, domyślna plansza zainicjowana przez aplikację - miłej zabawy.'
+            'default' => 'Pierwsza, domyślna plansza zainicjowana przez aplikację - miłej zabawy.',
+            'carriers' => [
+                'bogus_bus' => 'Lokalny potentat transportowy. Wybił konkurencję i winduje ceny.',
+                'pks_slupsk' => 'Stary (dobry?) PeKaEs. Pyrkocze, tyrkocze i jedzie.',
+            ],
+            'services' =>[
+                'septic' => 'Wywóz szamba - bo kanalizy się nie doczekamy.',
+                'garbage' => 'Jak już przyjdzie święto wywozu to jest impreza we wsi.',
+            ],
+            'cards' => [
+                'chance' => 'Pobierz i zobacz co cię czeka!',
+                'risk' => 'Pobierz i zobacz co cię czeka!',
+            ],
+            'properties' =>[
+                '1-1' => '',
+                '1-2' => '',
+
+                '2-1' => '',
+                '2-2' => '',
+                '2-3' => '',
+
+                '3-1' => '',
+                '3-2' => '',
+                '3-3' => '',
+
+                '4-1' => '',
+                '4-2' => '',
+                '4-3' => '',
+
+                '5-1' => '',
+                '5-2' => '',
+                '5-3' => '',
+
+                '6-1' => '',
+                '6-2' => '',
+                '6-3' => '',
+
+                '7-1' => '',
+                '7-2' => '',
+                '7-3' => '',
+
+                '8-1' => '',
+                '8-2' => '',
+            ],
         ],
+
     ],
 
     'games' => [
@@ -100,7 +188,16 @@ return [
         'balance' => 'Konto',
         'default_name' => 'Uliniopoly!',
         'start_balance' => 'Początkowa kasa',
+        'start_bonus' => 'Wypłata za przejście przez Start',
         'players' => 'Gracze',
+        'table' => [
+            'item' => 'Parametr',
+            'value' => 'Wartość',
+            'game_description' => 'Opis planszy',
+            'players_counter' => 'Liczba graczy',
+            'current_player' => 'Aktualny gracz',
+            'game_status' => 'Status gry',
+        ],
     ],
 
     'players' => [

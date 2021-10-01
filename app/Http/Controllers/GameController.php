@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Enums\GameSeat;
+use App\Events\EndOfTurn;
 use App\Events\PlayerMoved;
+use App\Events\PlayerThrown;
 use App\Http\Requests\GameRequest;
 use App\Models\Board;
 use App\Models\Game;
@@ -71,6 +73,7 @@ class GameController extends Controller
     public function store(GameRequest $request)
     {
         try {
+            DB::beginTransaction();
             $attributes = $request->validated();
 
             $game = Game::create($attributes);
@@ -83,11 +86,19 @@ class GameController extends Controller
                         'field_no' => 1
                     ]);
             }
+            foreach($game->board->fields as $field) {
+                $game->gameFields()->create([
+                    'board_slot' => $field->pivot->board_slot_id,
+                    'field_id' => $field->id
+                ]);
+            }
+            DB::commit();
             return view('games.show', [
                 'game' => $game,
             ]);
         } catch(\Exception $e){
             Log::error("An exception caught on attempt to create new game: ".$e->getMessage());
+            DB::rollBack();
             return view('error',[
                 'error' => $e->getMessage(),
             ]);
@@ -109,7 +120,7 @@ class GameController extends Controller
 
     public function retrieve(Game $game):JsonResponse
     {
-        $game = Game::with('players.user','board')->find($game->id);
+        $game = Game::with('board')->find($game->id);
         return response()->json([
             'game' => $game,
             'players_count' => $game->players->count()
@@ -139,15 +150,38 @@ class GameController extends Controller
         //
     }
 
+    public function throw(Game $game){
+        try{
+            if($game->currentPlayer()->moves_left>0) {
+                $result = $game->currentPlayerRoll();
+                $game->save();
+            } else {
+                $result = [0,0];
+                $game->log('Player '.$game->currentPlayer()->name.' has no more moves left.',false);
+            }
+            event(new PlayerThrown($game, $result));
+        } catch(\Exception $e){
+            error_log("GameController@throw error: ".$e->getMessage());
+            return response()->json([
+                'message' => 'Shit happend while throwing dices',
+                'error' => $e->getMessage()
+            ]);
+        }
+    }
+
+    public function endOfTurn(Game $game){
+        $game->nextPlayer();
+        $game->save();
+        event(new EndOfTurn($game));
+    }
+
 
     public function move(Game $game)
     {
         try {
-            error_log("Move it!");
+            error_log("GameController@move():");
             $lastDraw = $game->nextMove();
-
             event(new PlayerMoved($game, $lastDraw));
-
             return response()->json($game);
         } catch(\Exception $e){
             error_log("GameController@move error: ".$e->getMessage());
@@ -171,13 +205,14 @@ class GameController extends Controller
         try{
             DB::beginTransaction();
             $game->players()->delete();
+            $game->gameFields()->delete();
             $game->delete();
             DB::commit();
             return response()->json([
                 'status' => 'success',
                 'message' => 'Poprawnie usunięto grę',
             ]);
-        }catch(Exception $e){
+        }catch(\Exception $e){
             DB::rollBack();
             Log::error("An exception caught on attempt to delete game:".$e->getMessage());
             return response()->json([
